@@ -1,0 +1,35 @@
+@startuml
+left to right direction
+actor Cliente as cliente
+actor Atendente as atendente
+actor :Time do pátio: as patio
+actor DETRAN as detran
+rectangle Sistema {
+    usecase "Realizar locação" as UC1
+    usecase "Realizar cadastro" as UC2
+    usecase "Validar documentos" as UC3
+    usecase "Recusar locação" as UC4
+    usecase "Verificar locações pendentes" as UC5
+    usecase "Liberar cliente ao pátio" as UC6
+    usecase "Liberar veículo" as UC7
+    usecase "Buscar multas" as UC8
+
+    UC2 -up.> UC1 : << extend >>
+
+    UC4 -up.> UC3 : << extend >>
+    UC4 -up.> UC5 : << extend >>
+
+    UC6 .> UC7 : << include >>
+}
+
+cliente -- UC1
+
+atendente -- UC3
+atendente -- UC5
+atendente -- UC6
+
+patio -- UC7
+
+detran -up-- UC8
+
+@enduml
