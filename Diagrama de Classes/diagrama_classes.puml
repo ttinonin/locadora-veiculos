@@ -1,0 +1,115 @@
+@startuml
+
+skinparam groupInheritance 2
+
+class Usuario {
+	- nome: String
+	- email: String
+	- data_nascimento: Date
+	- cpf: String
+	- rg: String
+	- telefone: String
+	- cep: String
+	- endereco: String
+
+	+ cadastrar(): int
+	+ dados(): String
+}
+
+class Cliente {
+	- codigo_cadastro: int
+}
+
+class Atendente {
+	+ validar_documentos(int): boolean
+	+ liberar_cliente(int): String
+	+ recusar_locacao(int): String
+}
+
+class Time_Patio {
+	+ liberar_veiculo(): String
+}
+
+Usuario <|-- Cliente
+Usuario <|-- Atendente
+Usuario <|-- Time_Patio
+
+class Detran {}
+
+class Multa {
+	+ id: int
+	+ data: Date
+	+ placa: String
+	+ local: String
+	+ observacoes: String	
+}
+
+class Infracao {
+	+ valor: double
+	+ tipo: String
+	+ descricao: String
+	+ agravante: int
+}
+
+circle iMulta
+
+iMulta -r- Detran
+Multa -( iMulta
+Multa o-- Infracao : contém
+
+class Locacao {
+	- data_locacao: Date
+	- data_devolucao: Date
+	- pendente: boolean
+	- codigo_locacao: int	
+
+	+ locar(): int
+	+ atrasos(): String
+}
+
+class Item_Locacao {
+	- valor_locacao: double
+	- codigo_locacao: int	
+
+	+ registra(): int
+	+ consulta(): String
+}
+
+class Veiculo {
+	- nome: String
+	- ano: int
+	- kilometragem: int
+	- cor: String
+	- placa: String
+	- numero_chassi: int
+
+	+ registra(): int
+	+ consulta(): String
+}
+
+class Categoria {
+	- descricao: String
+	- valor_locacao: double
+}
+
+class Montadora {
+	- nome: String
+}
+
+Veiculo "0..*" -- Categoria : possui
+Veiculo  --> Montadora : pertence
+
+<> cliente_atendente_diamond
+
+Cliente -- cliente_atendente_diamond : possui
+Atendente -- cliente_atendente_diamond : possui
+cliente_atendente_diamond -- Locacao : realiza
+
+Locacao *-l- Item_Locacao : contém
+Locacao -- "0..*" Multa : possui
+
+Item_Locacao -- Veiculo : compõe
+
+Multa -[hidden]l- Locacao
+
+@enduml
