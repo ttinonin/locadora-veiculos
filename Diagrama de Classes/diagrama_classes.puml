@@ -1,6 +1,11 @@
 @startuml
 
 skinparam groupInheritance 2
+allowmixing
+
+boundary Interface_Locadora
+control Controlador_Locadora
+
 
 class Usuario {
 	- nome: String
@@ -37,18 +42,20 @@ Usuario <|-- Time_Patio
 class Detran {}
 
 class Multa {
-	+ id: int
-	+ data: Date
-	+ placa: String
-	+ local: String
-	+ observacoes: String	
+	- id: int
+	- data: Date
+	- placa: String
+	- local: String
+	- observacoes: String	
+
+	+ consultar_boleto(): String
 }
 
 class Infracao {
-	+ valor: double
-	+ tipo: String
-	+ descricao: String
-	+ agravante: int
+	- valor: double
+	- tipo: String
+	- descricao: String
+	- agravante: int
 }
 
 circle iMulta
@@ -62,26 +69,20 @@ class Locacao {
 	- data_devolucao: Date
 	- pendente: boolean
 	- codigo_locacao: int	
+	- valor_locacao: double
 
 	+ locar(): int
 	+ atrasos(): String
 }
 
-class Item_Locacao {
-	- valor_locacao: double
-	- codigo_locacao: int	
-
-	+ registra(): int
-	+ consulta(): String
-}
-
 class Veiculo {
 	- nome: String
 	- ano: int
-	- kilometragem: int
+	- quilometragem: int
 	- cor: String
 	- placa: String
 	- numero_chassi: int
+	- renavam: long
 
 	+ registra(): int
 	+ consulta(): String
@@ -96,19 +97,21 @@ class Montadora {
 	- nome: String
 }
 
-Veiculo "0..*" -- Categoria : possui
+Veiculo "1..*" -- Categoria : possui
 Veiculo  --> Montadora : pertence
+Veiculo -r- "0..*" Locacao : compõe
 
 <> cliente_atendente_diamond
 
 Cliente -- cliente_atendente_diamond : possui
 Atendente -- cliente_atendente_diamond : possui
-cliente_atendente_diamond -- Locacao : realiza
+cliente_atendente_diamond -- "1..*" Locacao : realiza
 
-Locacao *-l- Item_Locacao : contém
 Locacao -- "0..*" Multa : possui
+Locacao -- Controlador_Locadora
+Controlador_Locadora -[hidden]r- Cliente
 
-Item_Locacao -- Veiculo : compõe
+Controlador_Locadora -l- Interface_Locadora
 
 Multa -[hidden]l- Locacao
 
