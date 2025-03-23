@@ -1,0 +1,53 @@
+@startuml
+
+actor Cliente
+actor "Time do Pátio" as patio
+actor Atendente
+activate Cliente
+activate Atendente
+
+boundary ":Interface_Locadora" as interface
+control ":Controlador_Locadora" as controler
+participant "locacao1 \n :Locacao" as locacao
+participant "multa1 \n :Multa" as multa
+
+Cliente -> Atendente : Informar código de cadastro
+Atendente -> interface : Consultar boleto
+activate interface
+deactivate Atendente
+interface -> controler : Consultar boleto
+activate controler
+controler -> locacao : Consultar boleto: \n consultar_boleto(int)
+activate locacao
+locacao -> multa : Consultar boleto: \n consultar_boleto(int)
+activate multa
+
+multa --> locacao : dados da multa
+deactivate multa
+
+locacao -> controler ++: dados da multa
+deactivate controler
+deactivate locacao
+
+controler -> interface : dados da multa
+deactivate interface
+deactivate controler
+
+Cliente -> patio : Entregar veículo
+activate patio
+
+patio -> interface : Código de locação
+activate interface
+interface -> controler : Dar baixa na locação
+activate controler
+
+controler -> locacao : Dar baixa na locação: \n locar()
+activate locacao
+locacao --> controler : dados locacao fechada
+destroy locacao
+
+controler --> interface : dados locacao fechada
+deactivate controler
+deactivate interface
+@enduml
+

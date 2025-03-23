@@ -1,0 +1,47 @@
+@startuml
+
+actor Cliente
+actor "Time do pátio" as patio
+activate Cliente
+activate patio
+
+boundary ":Interface_Locadora" as interface
+control ":Controlador_Locadora" as controler
+
+participant "locacao1 \n :Locacao" as locacao
+participant "veiculo1 \n :Veiculo" as veiculo
+participant "categoria1 \n :Categoria" as categoria
+
+Cliente -> patio : Informar código de locação
+patio -> interface ++: Buscar locação
+interface -> controler ++: Buscar locação
+controler -> locacao ++: Buscar locação: \n locar()
+locacao -> veiculo ++: Consultar veículo: \n consulta()
+veiculo --> locacao --: Dados do veículo
+locacao --> controler --: Dados do veículo
+controler --> interface --: Dados do veículo
+deactivate interface
+
+patio -> interface ++: Liberar veículo
+interface -> controler ++: Liberar veículo
+controler -> locacao ++: Liberar veículo: \n locar()
+
+locacao -> veiculo ++: Selecionar veículo: \n consulta()
+
+alt Categoria disponivel
+  veiculo -> categoria ++: Selecionar cateoria do cliente
+  categoria --> veiculo --: categoria escolhida 
+else Categoria indisponivel
+  veiculo -> categoria ++: Selecionar upgrade
+  categoria --> veiculo --: upgrade de categoria
+end
+
+veiculo --> locacao --: veiculo selecionado
+
+locacao --> controler --: veiculo selecionado
+controler --> interface --: veiculo selecionado
+deactivate interface
+
+patio -> Cliente : Entregar veículo
+
+@enduml

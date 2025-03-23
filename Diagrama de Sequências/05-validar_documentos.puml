@@ -1,0 +1,39 @@
+@startuml
+
+actor Cliente
+actor Atendente
+activate Cliente
+activate Atendente
+
+boundary ":Interface_Locadora" as interface
+control ":Controlador_Locadora" as control
+
+participant "locacao1 \n :Locacao" as locacao
+participant "atendente1 \n :Atendente" as atendente_obj
+
+Cliente -> Atendente : Informar código de cadastro
+Atendente -> interface
+
+ref over interface, control, locacao
+  Verificar locações pendentes
+end ref
+
+Atendente -> interface ++: Buscar cliente
+interface -> control ++: Buscar cliente
+control -> atendente_obj ++: Validar documentos de cliente: \n validar_documentos(int)
+atendente_obj --> control --: documentos
+control --> interface --: documentos
+deactivate interface
+
+alt Documentos válidos
+  Atendente -> interface ++: Liberar cliente para próximo passos
+  interface -> control ++: Liberar cliente para próximo passos
+  deactivate interface
+  control -> atendente_obj ++: Liberar cliente para próximos passos: \n liberar_cliente(int)
+  deactivate control
+  deactivate atendente_obj
+else Documentos irregulares
+  Atendente -> interface
+  ref over interface, control, locacao : Recusar locação
+end
+@enduml

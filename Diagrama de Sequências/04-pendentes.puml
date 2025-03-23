@@ -1,0 +1,33 @@
+@startuml
+
+
+actor Cliente
+activate Cliente
+actor Atendente
+activate Atendente
+boundary ":Interface_Locadora" as interface
+control ":Controlador_Locadora" as controlador
+participant "locacao1 \n :Locacao" as locacao
+
+Cliente -> Atendente : Informar código de cadastro
+Atendente -> interface : Consultar pendências de cliente
+activate interface
+interface -> controlador : Consultar pendências de cliente
+activate controlador
+controlador -> locacao : Consultar pendências: \n atrasos(int)
+activate locacao
+
+locacao --> controlador : pendencias[]
+controlador --> interface : pendencias[]
+deactivate interface
+deactivate controlador
+deactivate locacao
+
+group opt [Possui pendências]
+Atendente -> interface
+  ref over interface, controlador, locacao
+    Recusar Locação
+  end ref
+end
+
+@enduml

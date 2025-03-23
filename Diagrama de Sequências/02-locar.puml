@@ -1,0 +1,55 @@
+@startuml
+
+actor Cliente
+actor Atendente
+activate Cliente
+activate Atendente
+
+boundary ":Interface_Locadora" as interface
+control ":Controlador_Locadora" as controler
+
+participant "cliente1 \n :Cliente" as cliente_obj
+participant "locacao1 \n :Locacao" as locacao
+
+participant "veiculo1 \n :Veiculo" as veiculo
+participant "categoria1 \n :Categoria" as categoria
+participant "montadora1 \n :Montadora" as montadora
+
+Cliente -> Atendente : Informar código de cadastro
+Atendente -> interface ++: Locar veículo
+interface -> controler ++: Locação
+
+loop Para cada cliente
+  controler -> cliente_obj ++: Consultar cliente: \n dados()
+  cliente_obj --> controler --: dados do cliente
+
+  controler -> cliente_obj
+
+  ref over cliente_obj, locacao : Verificar locações pendentes
+  controler -> cliente_obj
+  ref over cliente_obj, locacao : Validar documentos
+end
+
+loop Para cada veículo
+  controler -> veiculo ++: Consultar veículo: \n consulta()
+  veiculo -> categoria ++: Consultar categoria
+  categoria -> montadora ++: Consultar montadora
+  montadora --> categoria --: nome: String
+  categoria --> veiculo --: Montadora e categoria
+  veiculo --> controler --: Dados do veículo
+end
+
+controler -> interface --: Apresentar possíveis veículos
+deactivate interface
+
+Cliente -> Atendente : Informar categoria que deseja alugar
+Atendente -> interface ++: Selecionar veículo
+interface -> controler ++: Registrar locação
+controler -> locacao ++: Registar locação: \n locar()
+locacao --> controler --: Código de locação
+controler -> interface --: Apresentar dados da locação
+deactivate interface
+
+Atendente -> interface
+ref over interface, controler, locacao: Liberar cliente ao pátio
+@enduml

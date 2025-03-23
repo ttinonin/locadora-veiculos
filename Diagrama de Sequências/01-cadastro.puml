@@ -1,0 +1,25 @@
+@startuml
+
+actor Cliente as cliente
+actor Atendente as atendente
+activate cliente
+activate atendente
+boundary ":Interface_Locadora" as interface
+control ":Controlador_Locadora" as controlador
+participant "cliente1 \n :Cliente" as cliente_obj
+
+cliente -> atendente : Informar documentos
+atendente -> interface : Cadastrar dados do cliente
+activate interface
+interface -> controlador : Cadastrar dados do cliente
+activate controlador
+controlador -> cliente_obj : Cadastrar dados do cliente: \n cadastrar()
+activate cliente_obj
+
+cliente_obj --> controlador : codigo_cadastro
+deactivate cliente_obj
+controlador --> interface : codigo_cadastro
+deactivate controlador
+deactivate interface
+
+@enduml

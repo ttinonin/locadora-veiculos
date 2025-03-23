@@ -1,0 +1,22 @@
+@startuml
+
+actor Cliente
+actor Atendente
+activate Cliente
+activate Atendente
+
+boundary ":Interface_Locadora" as interface
+control ":Controlador_Locadora" as controler
+
+participant "locacao1 \n :Locacao" as locacao
+
+Cliente -> Atendente : Informar código de cadastro
+
+Atendente -> interface
+ref over interface, controler, locacao : Verificar locações pendentes
+Atendente -> interface
+ref over interface, controler, locacao : Validar documentos
+
+Atendente -> Cliente : Liberar ao pátio
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+
+Actor Cliente
+Actor Atendente
+activate Cliente
+activate Atendente
+
+boundary ":Interface_Locadora" as interface
+control ":Controlador_Locadora" as controler
+
+participant "atendente1 \n :Atendente" as atendente_obj
+
+Atendente -> interface ++: Recusar locação do cliente
+interface -> controler ++: Recusar locação do cliente
+controler -> atendente_obj ++: Recusar locação do cliente: \n recusar_locacao(int)
+
+atendente_obj --> controler --: dados da locação cancelada
+controler --> interface --: dados da locação cancelada
+
+deactivate interface
+
+Atendente -> Cliente : Instruir cliente
+
+@enduml
