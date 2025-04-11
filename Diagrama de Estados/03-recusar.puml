@@ -1,0 +1,12 @@
+@startuml
+
+state "Recusando Locação Cliente" as recusa
+recusa : + do / recusar_locacao()
+
+state "Visualizar Locação Cancelada" as visu
+
+[*] -r-> recusa : Recusar locação
+recusa -r-> visu : Dados da locação
+visu -r-> [*]
+
+@enduml

@@ -1,0 +1,61 @@
+@startuml
+
+state "Consultando Cadastro Cliente" as consulta_cad
+consulta_cad : + do / consulta()
+
+state "Apresentando Perfil Cliente" as apresenta_perfil
+
+state "Verificando Locações Pendentes" as locacoes_pendentes
+locacoes_pendentes : + do / atrasos()
+
+state pendentes_choice <<choice>>
+
+state "Recusando Locação" as recusa_locacao
+recusa_locacao : + do / recusar_locacao()
+
+state "Validando Documentos Cliente" as valida_docs
+valida_docs : + do / validar_documentos()
+
+state doc_choice <<choice>>
+
+state "Selecionando Veículo" as select_veiculo
+
+[*] -r-> consulta_cad : Código de cadastro informado
+consulta_cad -r-> apresenta_perfil : Cliente
+apresenta_perfil --> locacoes_pendentes : Locações Anteriores
+locacoes_pendentes --> pendentes_choice
+pendentes_choice -l-> recusa_locacao : [Se possui locações pendentes]
+recusa_locacao -l-> [*]
+recusa_locacao -[hidden]-> valida_docs
+
+pendentes_choice -d-> valida_docs : [Se não possui locações pendentes]
+valida_docs --> doc_choice
+doc_choice --> recusa_locacao : [Se documentos inválidos]
+
+state "Consultando Veículos" as query_veiculo {
+  state "Consultando Automóvel" as consulta_auto
+  consulta_auto : + do / consulta()
+
+  state "Consultando Categoria" as consulta_modelo
+  consulta_modelo : + do / consulta()
+
+  state "Consultando Montadora" as consulta_montadora
+  consulta_montadora : + do / consulta()
+
+  [*] -l-> consulta_auto
+  consulta_auto -l-> consulta_modelo
+  consulta_modelo --> consulta_montadora
+}
+
+doc_choice --> query_veiculo : [Se documentos válidos]
+query_veiculo -r-> select_veiculo : Veículos
+
+state "Registrando Locação" as reg_loc
+reg_loc : + do / locar
+
+state end2 <<end>>
+
+select_veiculo -r-> reg_loc : Veículo Selecionado
+reg_loc --> end2
+
+@enduml

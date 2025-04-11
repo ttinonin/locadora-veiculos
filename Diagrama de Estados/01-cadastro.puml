@@ -1,0 +1,12 @@
+@startuml
+
+state "Cadastrando Cliente" as cadastro
+cadastro : + do / cadastrar()
+
+state "Apresentando Dados Cliente" as dados
+
+[*] -r-> cadastro : Dados informados
+cadastro -r-> dados : Cliente
+dados -r-> [*]
+
+@enduml

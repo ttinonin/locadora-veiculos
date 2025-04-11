@@ -1,0 +1,11 @@
+@startuml
+
+state "Consultando Pendencias" as consulta
+consulta : + do / atrasos()
+
+state "Visualizar Pendencias" as visu
+
+[*] -r-> consulta : Código informado
+consulta -r-> visu : Pendencias
+
+@enduml
