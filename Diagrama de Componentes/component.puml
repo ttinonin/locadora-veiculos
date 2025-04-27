@@ -1,0 +1,41 @@
+@startuml
+
+package "Main" {
+    [LocadoraVeiculos.java]
+    [LocadoraVeiculos.java]
+}
+
+package "Views" {
+    [LocadoraVeiculos.java] --> [FormularioCadastroClente.java]
+    [LocadoraVeiculos.java] --> [FormularioCadastroAtendente.java]
+    [LocadoraVeiculos.java] --> [FormularioCadastroTimePatio.java]
+    [LocadoraVeiculos.java] --> [FormularioLocacao.java]
+    [LocadoraVeiculos.java] --> [VisualizarLocacoes.java]
+    [LocadoraVeiculos.java] --> [VisualizarMultas.java]
+}
+
+package "Controllers" {
+    [FormularioCadastroClente.java] --> [ClienteController]
+    [VisualizarMultas.java] --> [ClienteController]
+    [FormularioCadastroAtendente.java] --> [AtendenteController]
+    [FormularioCadastroTimePatio.java] --> [TimePatioController]
+    [FormularioLocacao.java] --> [LocacaoController]
+    [VisualizarLocacoes.java] --> [LocacaoController]
+}
+
+package "Models" {
+    [ClienteController] --> [Ciente.java]
+    [AtendenteController] --> [Atendente.java]
+    [TimePatioController] --> [TimePatio.java]
+    [LocacaoController] --> [Locacao.java]
+}
+
+database "PostgreSQL" {
+    [Ciente.java] --> [<<table>> Users]
+    [Atendente.java] --> [<<table>> Users]
+    [TimePatio.java] --> [<<table>> Users]
+    [Locacao.java] --> [<<table>> Locacoes]
+    [<<table>> Users] --> [<<table>> Locacoes]
+}
+
+@enduml
